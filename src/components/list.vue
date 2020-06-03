@@ -51,12 +51,20 @@
         computed:{
           routeit(){
             return this.$route.path
-          }
+          },
+          // changeNo() {
+          //   return this.$store.state.checkList
+          // }
         },
         watch:{
           routeit(newQuestion,oldQuestion){
             this.init(this.routeit,true)
-          }
+          },
+          // changeNo(newNo, oldNo) {
+          //   this.init(this.routeit,true)
+
+          // }
+
         },
         methods:{
           // to do

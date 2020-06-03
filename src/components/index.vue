@@ -495,9 +495,9 @@
                 that.$Message.error('恢复失败，请刷新后重试！');
               }
             })  
-            this.$store.commit('check', {
-                type: 'reset'
-              })
+            // this.$store.commit('check', {
+            //     type: 'reset'
+            //   })
             //   this.$store.commit('changeListData', {
             //       type: 'reset'
             //     })
@@ -591,9 +591,9 @@
             // this.$store.commit('changeListData', {
             //     type: 'reset'
             // })
-            this.$store.commit('check', {
-                type: 'reset'
-              }) 
+            // this.$store.commit('check', {
+            //     type: 'reset'
+            //   }) 
           },
           //展示信息
           play(){
