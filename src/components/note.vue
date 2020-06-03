@@ -21,7 +21,7 @@
         // props:['title','date'],
         data() {
             return {
-                text: ''
+                text: ""
             }
         },
         created () {
@@ -43,6 +43,8 @@
           // console.log(to.params.id)
           if (to.params.id != -1) {
             this.checkNote(to.params.id)
+          } else {
+            this.change(null,null)
           }
           next()
         },
@@ -54,26 +56,40 @@
           },
           saveMavon(value,render){           
             console.log('note:'+this.$store.state.focusTitle)
-            let title = this.$store.state.focusTitle
-            let date = this.$store.state.focusDate
+            // let title = this.$store.state.focusTitle
+            // let date = this.$store.state.focusDate
             console.log(this.$store.state.focusDate)
-
-            let id = this.$route.params.id > -1 ? this.$route.params.id : -1
+            let note = this.$store.state.note;
+            console.log(note)
+            let { file_id, title, date } = note;
+            // debugger;
+            // let id = this.$route.params.id > -1 ? this.$route.params.id : -1
             let that = this
             axios({
-              method: 'get',
+              method: 'post',
               baseURL: baseUrl,
-              url: '/note/insertNote',
-              params: {
-                file_id: id,
-                title,
-                date,
-                content: value // text
+              url: '/file/updatenote',
+              data: {
+                data: {
+                  file_id,
+                  title,
+                  date,
+                  content: value
+                } // text
               },
               timeout: 30000
             })
-            .then(response => {
-              console.log(response.data)
+            .then(res => {
+              let { code, data } = res.data;
+              code = Number(code);
+              console.log(code)
+              if (code === 200) {
+                let { file_id, date, title, content } = data;
+                this.$Message.success('保存成功');
+              } else {
+                this.$Message.error('保存失败');
+              }
+              // console.log(response.data)
               this.$emit('init')
               // this.init()
 
@@ -89,15 +105,19 @@
           axios({
               method: 'get',
               baseURL: baseUrl,
-              url: '/note/getNote',
+              url: '/file/getnote',
               params: {
                 file_id: id 
               },
               timeout: 30000
             })
-              .then(response => {
-                console.log(response.data)
-                this.change(response.data.content, response.data.content)
+              .then(res => {
+                let { code, data } = res.data;
+                code = Number(code);
+                if (code === 200) {
+                  let { content } = data;
+                  this.change(content, content);
+                }
               })
               .catch(error => {
                 console.error(error)

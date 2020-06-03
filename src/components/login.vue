@@ -134,14 +134,18 @@
   export default {
     created(){
       if(this.$store.isLog === true){
+        debugger;
         this.$router.replace('/near');
       } else {
         let that= this
         axios.get(baseUrl + '/users/isLog').then((res)=>{
-          console.log(res.data)
-        if(res.data=='ok'){
-          that.$store.commit("login",{username:res.data.username})
-          that.$store.commit('changeSize',res.data.size)
+          let {code, data} = res.data;
+          let { username, size } = data
+          code = Number(code);
+          if(code === 200) {
+          that.$store.dispatch("login", username)
+          that.$store.commit('changeSize', size)
+          // debugger;
           that.$router.replace('/near');
         }
       }).catch((err)=>{
@@ -163,13 +167,14 @@
      const checkUsername = (rule, value, callback) => {
         if (/^\w{3,15}$/.test(value)) {
           //验证该用户名是否已经被注册
-          axios.get(baseUrl + '/users/checkusername', {
+          axios.get(baseUrl + '/users/checkUsername', {
               params:{
                 username:value
               }
           }).then((res)=>{
-            console.log(res.data)
-            if(res.data === "ok") {
+            let {code} = res.data;
+            code = Number(code);
+            if(code === 201) {
               callback();
             }else{
               callback(new Error('阿偶，该用户名被注册了哦'))
@@ -206,13 +211,14 @@
 
       const checkEmail = (rule, value, callback) => {
         if (/^[a-z\d]+(\.[a-z\d]+)*@([\da-z](-[\da-z])?)+(\.{1,2}[a-z]+)+$/.test(value)) {
-              axios.get(baseUrl + '/users/checkemail', {
+              axios.get(baseUrl + '/users/checkEmail', {
                 params:{
                   email:value
                 }
               }).then((res)=>{
-                console.log(res.data)
-                if(res.data === 'ok'){
+                let {code} = res.data;
+                code = Number(code);
+                if(code === 201) {
                   callback();
                 }else{
                   callback(new Error('阿偶，邮箱被注册了哦，换个吧'))
@@ -265,16 +271,19 @@
     methods: {
       log(){
         let that = this
-        axios.get(baseUrl + '/users/login', {
-          params: {
+        axios.post(baseUrl + '/users/login', {
+          data: {
             username:this.loginForm.username,
             password:this.loginForm.password
           }
         })
-          .then(function (response){
-            console.log(response.data)
-            if(response.data ==='ok'){
-              that.$store.commit("login",{username:that.loginForm.username})
+          .then(function (res){
+            let {code} = res.data;
+            code = Number(code);
+            if(code === 200) {
+              // to do
+              // that.$store.commit("login",{username:that.loginForm.username})
+              that.$store.dispatch("login",that.loginForm.username)
               that.$Message.success('登录成功!');
               that.$router.push('/near');
             }else {
@@ -287,18 +296,20 @@
       },
       reg(){
         let that = this
-        axios.get(baseUrl + '/users/reg', {
-          params: {
+        axios.post(baseUrl + '/users/reg', {
+          data: {
             username:this.regForm.username,
             password:this.regForm.password,
             email:this.regForm.email
           }
         })
-          .then(function (response){
-            console.log(response.data)
-            if(response.data ==='ok'){
+          .then(function (res){
+            let {code} = res.data;
+            code = Number(code);
+            if(code === 200) {
               that.$Message.success('注册成功，快去登录!');
               that.islogin=true;
+
             }else {
               that.$Message.success('注册失败');
             }

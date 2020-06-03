@@ -8,7 +8,7 @@
       <audio :src="radio" autoplay="" controls="" v-if="listen" style="width:100%"> </audio>
     </Modal>
     <Row style="height: 60px;line-height: 60px;font-size: 13px" justify="center" class="code-row-bg">
-      <i-col span="2"><Checkbox v-model="check" @on-change="change"></Checkbox></i-col>
+      <i-col span="2"><Checkbox v-model="check" @on-change="change" @blur="change"></Checkbox></i-col>
         <i-col span="2"><img @click="display" :src="img" width="50px" height="50px" style="vertical-align: middle;"></i-col>
         <i-col span="4">{{item.filename}}</i-col>
         <!-- <Time :time="item.date"/> -->
@@ -30,6 +30,7 @@
           return{
             visible:false,
             listen: false,
+            // to do
             check:'',
             background:{
               'background-color':'white',
@@ -54,10 +55,14 @@
                 // return baseUrl + this.$store.state.user.username+'/'+this.item.type+'/'+this.item.file
                 // return this.item.path
                 // return 'data:image/jpg;base64,' + this.item.file
-                return baseUrl + '/' + this.item.path
+                return baseUrl  + this.item.path
                 // return this.$store.state.user
               // }
-            } else {
+            } 
+            // else if (this.item.type === 'trash') {
+            //   return baseUrl  + this.item.path
+            // }
+            else {
               return '../../static/img/' + this.item.type + '.png'
             }
             
@@ -68,7 +73,7 @@
               return baseUrl + this.$store.state.user.username+'/trash/'+this.item.file
             }else{
               // return baseUrl + this.$store.state.user.username+'/'+this.item.type+'/'+this.item.file
-              return baseUrl + '/' + this.item.path
+              return baseUrl + this.item.path
             }
           },
           // doc () {
@@ -92,19 +97,22 @@
         },
         methods:{
           change(){
+            // debugger;
             if(this.check){
               this.background["background-color"]="#2d8cf0"
               this.background["color"]="white"
               this.$emit('message',true,{
                 filename:this.item.filename,
-                type:this.item.type
+                type:this.item.type,
+                file_id: this.item.file_id
               })
             }else{
               this.background["background-color"]="white"
               this.background["color"]="black"
               this.$emit('message',false,{
                 filename:this.item.filename,
-                type:this.item.type
+                type:this.item.type,
+                file_id: this.item.file_id
               })
             }
           },

@@ -1,3 +1,3 @@
-module.exports = { 'baseUrl': 'http://192.168.0.104:8080' }
-
+module.exports = { 'baseUrl': 'http://129.204.185.247:2333' }
+// http://129.204.185.247:2333/api/reg 
 // module.exports = { 'baseUrl': 'http://localhost:3000' }

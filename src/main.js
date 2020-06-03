@@ -28,7 +28,7 @@ Vue.config.productionTip = false
 const store = new vuex.Store({
   state:{
     size:'100',  //已用的空间
-    isLog:false, // 临时改动
+    isLog: '', // 临时改动
     isNote: false,
     user:'未知',
     source:{
@@ -38,11 +38,18 @@ const store = new vuex.Store({
       doc:[],
       video:[],
       radio:[],
-      note:[],
+      // note:[],
       trash: [],
       coffer:[]
       // 保险箱
     },
+    // 当前的笔记
+    note: {
+      title: '',
+      date: '',
+      display: true,
+      file_id: ''
+    }, 
     checkList:0,//选中的个数
     focusTitle: '',
     focusDate: '',
@@ -67,8 +74,11 @@ const store = new vuex.Store({
         })
         state.ListData.splice(theindex,1);
       }else if(it.type=='reset'){
-        state.checkList=[]
+        state.ListData=[]
       }
+      console.log(state.ListData)
+      // debugger; 
+
     },
     check(state,it){
       if(it.type=='reset'){
@@ -79,16 +89,19 @@ const store = new vuex.Store({
         state.checkList--;
       }
     },
-    login(state,it){
-      state.isLog=true;
-      state.user=it
-    },
+    // login({state} = state,it){
+    //   debugger;
+    //   state.isLog = true;
+    //   state.user=it;
+    //   console.log(state)
+    //   return state;
+    // },
     out(state){
       state.isLog=false;
       state.user=''
     },
     updateSource(state,it){
-      // console.log(it)
+      // debugger;
       if(it.type=='img'){
         state.source.img=it.files
       }else if(it.type=='note'){
@@ -101,6 +114,7 @@ const store = new vuex.Store({
         state.source.radio=it.files
       }else if(it.type=='all'){
         state.source.all=it.files;
+        console.log(state.source.all)
         ['img','doc','video','radio','note'].forEach(function (item,index,array) {
           state.source[item]=[];
         })
@@ -109,11 +123,23 @@ const store = new vuex.Store({
         })
       }else if(it.type=='near'){
         state.source.near=it.files;
+        // 这里单独放了一份，不牵扯任何类型
+        // to do
       }else if(it.type=='trash'){
         state.source.trash=it.files;
       }else if(it.type=='coffer'){
         state.source.coffer=it.files;
       }
+    }
+  },
+  actions: {
+    login({state} = state,it){
+      state.isLog = true;
+      state.user=it;
+      return state;
+    },
+    getNote({state} = state, it) {
+      state.note = it;
     }
   }
 })

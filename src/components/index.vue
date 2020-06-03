@@ -64,7 +64,7 @@
                   </MenuItem>
               </Menu>
               <Progress :percent="percent" status="active" style="padding-top: 50px" :stroke-width="5">
-                <span>已用容量{{size}}/10G</span>
+                <span>已用容量{{size}}/1G</span>
                 <Icon type="checkmark-circled"></Icon>
               </Progress>
             </Content>
@@ -73,61 +73,85 @@
     <Layout>
       <Header style="background-color: white;z-index:1000;">
           <Row type="flex" justify="space-between">
-            <Col span="6" >
+            <Col span="9" >
               <div style="color: #2d8cf0">
-              <Dropdown style="margin-left: 20px">
-                <Button type="primary" icon="ios-cloud-upload">
-                  上传
-                  <Icon type="ios-arrow-down"></Icon>
-                </Button>
-                <DropdownMenu slot="list">
-                  <DropdownItem>
-                    <!-- "http://192.168.0.118:8080/index/upfile" -->
-                    <Upload multiple type="select"
-                            :action= "action"
-                            :format="['jpg','jpeg','png', 'gif', 'mp3', 'avi', 'flv', 'mov', 'mac', 'dat', 'doc', 'docx', 'bmp', 'pdf', 'pptx', 'ppt', 'xls', 'xlsx', 'rmvb', 'mp4', 'wma', 'wav']"
-                            :on-success="handleSuccess"
-                            :on-error="handleError"
-                            :on-progress="handleProgress"
-                            :on-format-error="handleFormatError"
-                            :show-upload-list=true
-                            :with-credentials=true>
-                      <Icon type="md-document"></Icon>文件
-                    </Upload>
-                  </DropdownItem>
-                  <DropdownItem>
-                    <Upload
-                      action="//jsonplaceholder.typicode.com/posts/">
-                      <Icon type="ios-folder" />文件夹
-                    </Upload>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              <Dropdown style="margin-left: 20px">
-                <Button  icon="md-add" >
-                  新建
-                  <Icon type="ios-arrow-down"></Icon>
-                </Button>
-                <Dropdown-menu slot="list">
-            <Dropdown-item><router-link   @click.native = "childemit()" to="/note/-1"><Icon type="edit"/>新建笔记</router-link></Dropdown-item>
-            <Dropdown-item><Icon type="folder"/>新建文件夹</Dropdown-item>
-        </Dropdown-menu>
-              </Dropdown>
-            </div>
+                <Dropdown style="margin-left: 20px">
+                  <Button type="primary" icon="ios-cloud-upload">
+                    上传
+                    <Icon type="ios-arrow-down"></Icon>
+                  </Button>
+                  <DropdownMenu slot="list">
+                    <DropdownItem>
+                              <!-- :action= "action" -->
+                      <!-- "http://192.168.0.118:8080/index/upfile" -->
+                              <!-- :before-upload="loading" -->
+                      <Upload multiple type="select"
+                              :format="['jpg','jpeg','png', 'gif', 'mp3', 'avi',
+                              'flv', 'mov', 'mac', 'dat', 'doc', 'docx', 'bmp',
+                                'pdf', 'pptx', 'ppt', 'xls', 'xlsx', 'rmvb', 'mp4',
+                                'wma', 'wav', 'md']"
+                              :action= "action"
+                              :on-success="handleSuccess"
+                              :on-error="handleError"
+                              :on-progress="handleProgress"
+                              :on-format-error="handleFormatError"
+                              :show-upload-list=true
+                              :with-credentials=true>
+                        <Icon type="md-document"></Icon>文件
+                      </Upload>
+                    </DropdownItem>
+                    <DropdownItem>
+                      <Upload
+                        action="//jsonplaceholder.typicode.com/posts/">
+                        <Icon type="ios-folder" />文件夹
+                      </Upload>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                <Dropdown style="margin-left: 20px">
+                  <Button  icon="md-add" >
+                    新建
+                    <Icon type="ios-arrow-down"></Icon>
+                  </Button>
+                  <Dropdown-menu slot="list">
+                    <Dropdown-item><router-link   @click.native = "childemit()" to="/note/-1"><Icon type="edit"/>新建笔记</router-link></Dropdown-item>
+                    <Dropdown-item><Icon type="folder"/>新建文件夹</Dropdown-item>
+                  </Dropdown-menu>
+                </Dropdown>
+                <i-button @click="dialogFormVisible = true">接受分享</i-button>
+                <el-dialog title="提取码" :visible.sync="dialogFormVisible">
+                    <el-input v-model="inputOrder" placeholder="请输入提取码"></el-input>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="ShareShowFile()">确 定</el-button>
+                        <!-- dialogFormVisible = false -->
+                    </div>
+                </el-dialog>
+              </div>
             </Col>
-            <Col span="6" v-if="$store.state.checkList!=0">
+            <Col span="8" v-if="$store.state.checkList!=0">
               <Button type="error" @click="delet">删除</Button>
               <Button type="warning" @click="goCoffer">加入保险箱</Button>
               <Button @click="leaveCoffer" v-if="$route.path=='/coffer'">从保险箱移出</Button>
               <Button type="primary" v-if="$route.path!='/trash'" @click="download">下载</Button>
               <Button type="primary"
                       @click="huifu"
-                      v-else="$route.path!='/trash'">复原</Button>
+                      v-else>复原
+              </Button>
+              <!-- to do -->
+              <Poptip
+                confirm
+                placement="bottom"
+                title="您确认分享这些内容吗？"
+                @on-ok="share"
+                @on-cancel="cancel">
+                <i-button>分享给朋友</i-button>
+              </Poptip>
             </Col>
             <Col span="6" >
               <div>
                 <span class="name" @click="play">
-                  {{$store.state.user.username}}
+                  {{this.$store.state.user}}
                   <Icon v-if=" myValue" type="md-arrow-dropup" />
                   <Icon v-else type="md-arrow-dropdown"/>
                 </span>
@@ -138,7 +162,7 @@
                       <Row>
                         <Col span="12"><Avatar shape="square" icon="ios-person"  size="large" /></Col>
                         <Col span="12">
-                            <span> {{$store.state.user.username}}</span>
+                            <span> {{$store.state.user}}</span>
                         </Col>
                       </Row>
                     </Header>
@@ -153,7 +177,9 @@
                     </Content>
                   </Layout>
                 </Card>
+
               </div>
+              
             </Col>
           </Row>
       </Header>
@@ -174,29 +200,38 @@
         name: "index",
         data(){
           return{
+            dialogFormVisible: false,
             input:'',
+            inputOrder: '',
             myValue:false,
             checkData:[],
-            action: 'http://192.168.0.104:8080/index/upfile'
+            action: baseUrl + '/file/upfile'
           }
         },
+        // computed: {
+        //    ...mapState(['count'])
+        // },
         created(){
-          if(this.$store.isLog === true){
-            //
-          } else {
+          // console.log(this.$store.state)
+          if(this.$store.state.isLog === false) {
             let that= this
             axios.get(baseUrl + '/users/isLog').then((res)=>{
-            if(res.data.res=='ok'){
-              that.$store.commit("login",{username:res.data.username})
-              that.$store.commit('changeSize',res.data.size)
-              // that.$router.replace('/near');
-            } else {
-              that.$router.replace('/');
-            }
-          }).catch((err)=>{
-            console.log(err)
-          })
-          }      
+              let {code, data} = res.data;
+              let { username, size } = data
+              code = Number(code);
+              if(code === 200) {
+                // that.$store.commit("login",{username:data.username})
+                // that.$store.commit('changeSize',data.size)
+                that.$store.dispatch("login", username)
+                that.$store.commit('changeSize', size)
+                // that.$router.replace('/near');
+              } else {
+                that.$router.replace('/');
+              }
+            }).catch((err)=>{
+              console.log(err)
+            })
+          }    
         },
 
         computed:{
@@ -217,7 +252,7 @@
             }
           },
           percent(){
-            let all = 10*1024*1024*1024;
+            let all = 1*1024*1024*1024;
             if(Math.floor(this.$store.state.size/all)*100<1){
               return 1;
             }else{
@@ -231,56 +266,153 @@
           }
         },
         methods:{
+          ShareShowFile () {
+              this.dialogFormVisible = false;
+              let shareno = this.inputOrder;
+              // 后台判断下用户
+              axios.get(baseUrl + '/sharefile/ShareShowFile',{
+                  params:{
+                    shareno
+                  }
+                }).then((res)=>{
+                  let {code, data} = res.data;
+                  code = Number(code);
+                  if(code === 200) {
+                      console.log(data)
+                      axios.post(baseUrl + '/sharefile/ShareSaveFile',{
+                        data:{
+                            // to do
+                            shareno,
+                            fileids: data
+                        }
+                        }).then((res)=>{
+                        let {code} = res.data;
+                        code = Number(code);
+                        if(code === 200) {
+                            this.$Message.success('获取分享成功！');
+                        }else{
+                            this.$Message.error('获取分享失败！');
+                        }
+                        })
+                  }else if (code === 201){
+                      this.$Message.error('不能提取本人的文件喔！');
+                  } else if (code === 202) {
+                      this.$Message.error('提取码出错啦！');
+                  } else {
+                      this.$Message.error('提取失败');
+                  }
+                })
+
+          },
+          changeModal() {
+            console.log('aaaa')
+            this.modal = true
+            console.log(this.modal)
+          },
+          share () {
+            let listData = this.$store.state.ListData;
+            let fileids = listData.map(item => item.file_id)
+            let type = listData[0].type
+            console.log(listData)
+            let that = this
+            axios.post(baseUrl + '/sharefile/ShareToFile', {
+              data: {
+                fileids,
+                type
+              }
+            }).then((res) => {
+            
+              console.log(res.data)
+              let { code, data } = res.data;
+              code = Number(code);
+              if (code === 200) {
+                alert('分享码获取成功！' + data)
+              } else {
+                this.$Message.success('分享码获取失败！');
+              }
+            })
+          },
+          cancel () {
+            this.$Message.info('已经取消');
+            this.$store.commit('check', {
+              type: 'reset'
+            })
+            this.$store.commit('changeListData', {
+                type: 'reset'
+            })
+          },
           // 下载到本地
           async download (){
             this.$store.state.ListData.forEach(function (item) {
-              axios.get(baseUrl + '/index/fileDownload',{
-                    params:{
-                      filename:item.filename,
-                      type:item.type
-                    }
-                  }).then((res)=>{
-                    // console.log(res)
-                    if(res.data=='ok'){
-                      alert('下载成功！');
-                    }else{
-                      alert('下载失败，请刷新后重试！');
-                    }
+              axios.get(baseUrl + '/file/filedownload',{
+                responseType: 'arraybuffer', // 表明返回服务器返回的数据类型
+                params:{
+                  filename:item.filename,
+                  type:item.type
+                }
+                }).then((res)=>{
+                  let blob = new Blob([res.data], {
+                    type: 'application/octet-stream'
                   })
+                  let filename = item.filename;
+                  if (window.navigator.msSaveOrOpenBlob) {
+                    navigator.msSaveBlob(blob, filename)
+                  } else {
+                    var link = document.createElement('a')
+                    link.href = window.URL.createObjectURL(blob)
+                    link.download = filename
+                    link.click()
+                    //释放内存
+                    window.URL.revokeObjectURL(link.href)
+                  }
                 })
+              })
           },
           async routeToCoffer () {
             let that = this
-            axios.get(baseUrl + '/index/getFile', {
-                      params: {
-                        type: 'coffer'
-                      }
-                    }).then((res) => {
-                      if (res.data.length == 0) {
+            axios.get(baseUrl + '/file/getfile', {
+              params: {
+                type: 'coffer'
+              }
+            }).then((res) => {
+              console.log(res.data)
+              let { code, data } = res.data;
+              code = Number(code);
+              if (code === 200) {
+                that.$nextTick(function () {
+                  that.$store.commit('updateSource', {
+                    type: 'coffer',
+                    files: data
+                  })
+                })
+              }
+              // if (res.data.length == 0) {
 
-                      } else {
-                        that.$nextTick(function () {
-                          that.$store.commit('updateSource', {
-                            type: 'coffer',
-                            files: res.data
-                          })
-                        })
-                      }
-                    })
+              // } else {
+              //   that.$nextTick(function () {
+              //     that.$store.commit('updateSource', {
+              //       type: 'coffer',
+              //       files: res.data
+              //     })
+              //   })
+              // }
+            })
           },
           // 真正执行进入保险箱操作
           addToOffer () {
             // console.log('addToOffer:'+this.ListData)
             this.$store.state.ListData.forEach(function (item) {
 
-              axios.get(baseUrl + '/coffer/insertCoffer',{
+              axios.get(baseUrl + '/file/insertcoffer',{
                   params:{
                     filename:item.filename,
                       type:item.type
                   }
                 }).then((res)=>{
                   // console.log(res)
-                  if(res.data=='ok'){
+                  let {code} = res.data;
+                  code = Number(code);
+                  if(code === 200) {
                     alert('加入保险箱成功！')
                     // this.$Message.success('加入保险箱成功！');
                   }else{
@@ -306,8 +438,10 @@
                 params: {
                   password: value
                 }
-              }).then(response => {
-                if (response.data=== 'ok') {
+              }).then(res => {
+                let {code} = res.data;
+                code = Number(code);
+                if(code === 200) {
                   that.$message({
                     type: 'success',
                     message: '密码正确~'
@@ -344,88 +478,122 @@
               this.$refs['mychild'].addNote()
           },
           huifu(){
-            this.$store.state.ListData.forEach(function (item) {
-              axios.get(baseUrl + '/trash/huifu',{
-                params:{
-                  filename:item.filename,
-                  type:item.type
-                }
-              }).then((res)=>{
-                // console.log(res)
-                if(res.data.res=='ok'){
-                  that.$Message.success('恢复成功！');
-                }else{
-                  that.$Message.error('恢复失败，请刷新后重试！');
-                }
+            let that = this;
+            let listData = this.$store.state.ListData;
+            axios.post(baseUrl + '/file/huifu',{
+              data:{
+                listData
+              }
+            }).then((res)=>{
+              let { code, data } = res.data;
+              code = Number(code);
+              console.log(code)
+              if (code === 200) {
+                that.$Message.success('恢复成功！');
+                that.changeOne('trash')
+              }else{
+                that.$Message.error('恢复失败，请刷新后重试！');
+              }
+            })  
+            this.$store.commit('check', {
+                type: 'reset'
               })
-            })
+            //   this.$store.commit('changeListData', {
+            //       type: 'reset'
+            //     })
           },
           // 移出保险箱
           leaveCoffer () {
-            this.$store.state.ListData.forEach(function (item) {
-              axios.get(baseUrl + '/coffer/restore',{
-                params:{
-                  filename:item.filename,
-                  type:item.type
+            let listData = this.$store.state.ListData;
+            let that = this;
+            axios.post(baseUrl + '/file/restore',{
+                data:{
+                  listData
                 }
               }).then((res)=>{
-                // console.log(res)
-                if(res.data=='ok'){
-                  alert('移出保险箱成功！')
-                  // that.$Message.success('移出保险箱成功！');
+                let { code, data } = res.data;
+                code = Number(code);
+                console.log(code)
+                if (code === 200) {
+                  that.$Message.success('移出保险箱成功！');
                 }else{
-                  // that.$Message.error('移出保险箱失败，请刷新后重试！');
-                  alert('移出保险箱失败，请刷新后重试！')
+                  that.$Message.error('移出保险箱失败，请刷新后重试！');
                 }
-              })
-            })
+              })  
           },
           delet(){
-            if(this.$route.path=='/trash'){
-              // console.log('index.vue中选中信息：'+this.$store.state.ListData)
-              this.$store.state.ListData.forEach(function (item) {
-                let that = this
-                axios.get(baseUrl + '/trash/deleteFile',{
-                  params:{
-                    filename:item.filename,
-                    type:item.type
+            console.log(this.$store.state.ListData)
+              let listData = this.$store.state.ListData;
+              let type = String(this.$route.path).slice(1)
+              console.log(type)
+            if(type=='trash'){
+              console.log('index.vue中选中信息：')              
+              let that = this             
+              axios.post(baseUrl + '/file/deletefile',{
+                  data:{
+                    listData
                   }
                 }).then((res)=>{
-                  // console.log(res);
-                  if(res.data.res=='ok'){
+                  let { code, data } = res.data;
+                  code = Number(code);
+                  console.log(code)
+                  if (code === 200) {
+                    // to do
+                    // 改变ListData为空，重新获取trash
                     that.$Message.success('删除成功！');
+                    that.changeOne('trash');
                   }else{
                     that.$Message.error('删除失败，请刷新后重试！');
                   }
-                })
-              })
+                })  
+              this.changeOne('trash');
             }else{
-              // console.log('index.vue中选中信息：'+this.$store.state.ListData)
-              // var newArr = [].slice.call(this.$store.state.ListData)
-              // console.log(newArr)
-        //        it.files.forEach(function (item,index,array) {
-        //   Array.prototype.push.call(state.source[item.type],item);
-        // })
-              this.$store.state.ListData.forEach(function (item) {
-                // console.log('filename:'+item.filename)
-                let that = this
-                axios.get(baseUrl + '/trash/gotoTrash',{
-                  params:{
-                    filename:item.filename,
-                    type:item.type
+              console.log(listData)
+              let that = this;
+              axios.post(baseUrl + '/file/gototrash',{
+                  data:{
+                    listData
                   }
                 }).then((res)=>{
-                  // console.log(res)
-                  if(res.data=='ok'){
-                    // that.$Message.success('加入回收站！');
-                    alert('加入回收站！')
+                  let { code, data } = res.data;
+                  code = Number(code);
+                  console.log(code)
+                  if (code === 200) {
+                    that.$Message.success('加入回收站！');
+                    that.changeOne(type);
+
                   }else{
-                    alert('加入回收站失败，请刷新后重试！')
-                    // that.$Message.error('加入回收站失败，请刷新后重试！');
+                    that.$Message.error('加入回收站失败，请刷新后重试！');
                   }
-                })
-              })
+                }) 
+                
+              // this.$store.state.ListData.forEach(function (item) {
+              //   // console.log('filename:'+item.filename)
+              //   let that = this
+              //   axios.get(baseUrl + '/file/gototrash',{
+              //     params:{
+              //       filename:item.filename,
+              //       type:item.type
+              //     }
+              //   }).then((res)=>{
+              //     // console.log(res)
+              //     let { code, data } = res.data;
+              //     code = Number(code);
+              //     if (code === 200) {
+              //       alert('加入回收站！')
+              //     }else{
+              //       alert('加入回收站失败，请刷新后重试！')
+              //       // that.$Message.error('加入回收站失败，请刷新后重试！');
+              //     }
+              //   })
+              // })
             }
+            // this.$store.commit('changeListData', {
+            //     type: 'reset'
+            // })
+            this.$store.commit('check', {
+                type: 'reset'
+              }) 
           },
           //展示信息
           play(){
@@ -434,7 +602,9 @@
           outlogin(){
             //退出登录
             axios.get(baseUrl + '/users/outLogin').then((res)=>{
-              if(res.data ==='ok'){
+            let {code} = res.data;
+            code = Number(code);
+            if(code === 200) {
                 this.$store.commit('out');
                 this.$Message.success('登出成功!');
                 this.$router.replace('/')
@@ -443,14 +613,71 @@
               console.log(err)
             })
           },
-          handleSuccess(response, file, fileList){
-            this.$Notice.success({
+          handleSuccess(res, file, fileList){
+            // to do
+           let {code} = res;
+            code = Number(code);
+            if(code === 200) {
+              this.$Notice.success({
               title: '上传成功',
               desc: ''
-            });
+              });
+              this.changeOne('all')
+            } else {
+              this.$Notice.error({
+              title: '上传失败,可能是名字重复了',
+              desc: ''
+              });
+            }
+            
           },
-          handleProgress(event, file, fileList){
-            console.log(event, file, fileList)
+          async loading(file) {
+            // debugger;
+            let canUpfile = false;
+            console.log(file)
+            let filename = file.name;
+            let file_size = file.size;
+            let type;
+            var file_type = filename.substring(filename.lastIndexOf('.') + 1, filename.length);
+            let types = {
+              img:['jpg', 'jpeg', 'png', 'gif'],
+              doc:['doc', 'docx'],
+              video:['avi', 'mov', 'dat', 'mp4', 'flv'],
+              radio:['mp3', 'wav'],
+              note:['md'],
+            }
+            for ( var i in types) {
+              if (types[i].indexOf(file_type) !== -1) {
+                type = i;
+                break;
+              }
+            }
+             await axios.get(baseUrl + '/file/upfile', {
+                params: {
+                  type,
+                  filename,
+                  file_size
+                }
+              }).then((res) => {
+                let {code} = res.data
+                console.log(res.data)
+                code = Number(code)
+                console.log(code)
+                if (code === 200) {
+                  canUpfile = true;
+                  // return canUpfile;
+                } else {
+                  this.$Message.error('文件重名啦！');
+                  canUpfile = false;
+                  // return canUpfile;
+
+                }
+              })
+              // console.log(canUpfile)
+              // return canUpfile;
+          },
+          handleProgress(event, file, fileList){           
+            console.log(file)
           },
           handleError( error, file, fileList){
             console.log(error, file, fileList)
@@ -465,22 +692,23 @@
             //路由切换加载信息
             if (name == 'all'||name=='doc'||name=='img'||name=='radio'||name=='video'||name=='trash') {
               let that = this;
-              axios.get(baseUrl + '/index/getFile', {
+              axios.get(baseUrl + '/file/getfile', {
                 params: {
                   type: name
                 }
               }).then((res) => {
-                if (res.data.length == 0) {
-
-                } else {
-                  // console.log(res.data)
+                console.log(res.data)
+                let { code, data } = res.data;
+                code = Number(code);
+                if (code === 200) {
                   that.$nextTick(function () {
                     that.$store.commit('updateSource', {
                       type: name,
-                      files: res.data
+                      files: data
                     })
                   })
                 }
+
               })
             } else if (name == 'coffer') {
               this.goCoffer ()
@@ -501,5 +729,8 @@
   }
   .all{
     text-align: center;
+  }
+  .ivu-icon-ios-help-circle {
+      opacity: 0;
   }
 </style>

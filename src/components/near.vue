@@ -32,42 +32,50 @@
         name: "near",
         components:{item},
         created () {
-          console.log(111)
-          axios.get(baseUrl + '/index/getFile', {
-                params: {
-                  type: 'near'
-                }
-              }).then((res) => {
-                if (res.data.length == 0) {
+          // console.log(111)
+          // axios.get(baseUrl + '/file/getfile', {
+          //       params: {
+          //         type: 'near'
+          //       }
+          //     }).then((res) => {
+          //       if (res.data.length == 0) {
 
-                } else {
-                  that.$nextTick(function () {
-                    that.$store.commit('updateSource', {
-                      type: name,
-                      files: res.data
-                    })
-                  })
-                }
-              })
+          //       } else {
+          //         that.$nextTick(function () {
+          //           that.$store.commit('updateSource', {
+          //             type: name,
+          //             files: res.data
+          //           })
+          //         })
+          //       }
+          //     })
         },
         mounted(){
           
-          console.warn(this.$store)
+          // console.warn(this.$store)
           // let sessionStore = sessionStorage.getItem('store')
           //   if(sessionStore) {
           //     this.fromSources = sessionStore
           //   }else{
           //     this.fromSources = this.$store.state.store
           //   }
-          
-            axios.get(baseUrl + '/index/getFileByTime').then((res)=>{
+          let that = this;
+            axios.get(baseUrl + '/file/getfilebytime').then((res)=>{
               console.log(res.data)
-              this.$store.commit('updateSource',{
-                type:'near',
-                files:res.data
-              });
-              this.nearList=this.$store.state.source.near;
-              console.log(this.nearList)
+              let { code, data } = res.data;
+                code = Number(code);
+                if (code === 200) {
+                  that.$nextTick(function () {
+                    that.$store.commit('updateSource', {
+                      type: 'near',
+                      files: data
+                    })
+                  })
+                }
+                // console.log(that.$store.state.source.near)
+              that.nearList=that.$store.state.source.near;
+              // debugger;
+              // console.log(this.nearList)
             }).catch((err)=>{
               console.log(err)
             })

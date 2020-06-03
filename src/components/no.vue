@@ -6,12 +6,12 @@
             <header><h2>全部笔记</h2></header>
             <div class="list">
                 <h2 v-if="noteList.length===0">暂无笔记</h2>
-                <div v-for="(item, index) in noteList" :key="item.index" v-else>
+                <div v-for="(item, index) in noteList" :key="index" v-else>
                     <div style="background:#eee;padding: 5px">
                         <Card :bordered="true" style="height: 100px;">
                             <div style="text-align:center">
                                 <!-- item.display = false -->
-                                <input style="width: 200px" v-model="item.title" v-on:blur="change(item)" v-show="item.display"></input>
+                                <input style="width: 200px" v-model="item.title" v-on:blur="change(item)" v-show="item.display" placeholder="请输入名称">
                                 <p slot="title"  v-on:dblclick="item.display = true" v-show="!item.display" >{{item.title}}</p>
                                 <p>{{item.date}}</p>
                                 <i-button size="small" @click="see(item)">查看</i-button>
@@ -51,9 +51,9 @@ return {
     // {title: '使用阴影效果', date: '2019-12-14', display: true, id: 2},
     // {title: '使用阴影效果', date: '2019-12-14', display: true, id: 3}
     ],
-    // length: 3,
+    length: '',
     isNote: true,
-    show: false
+    show: true
 
     
 
@@ -79,15 +79,43 @@ methods: {
 
     },
     // 父组件调用了它， 给noteList里传入一个临时的值
-    addNote() {
-        this.noteList.push({title: '未命名', date: Date.now(), display: true, id: -1})
+    addNote() {        
         this.length += 1;
+        let file_id = this.length;
+        axios({
+              method: 'get',
+              baseURL: baseUrl,
+              url: '/file/createnote',
+              timeout: 30000
+            })
+              .then(res => {
+                let { code, data } = res.data;
+                code = Number(code);
+                console.log(code)
+                if (code === 200) {
+                    // to do 返回id
+                    let { file_id, date } = data;
+                    let note = {title: '', date, display: true, file_id}
+                    this.noteList.push(note)
+                    this.$store.dispatch('getNote', note);
+                }
+
+              })
+              .catch(error => {
+                console.error(error)
+              })
+        // this.noteList.push({title: '未命名', date: Date.now(), display: true, file_id})
+        
     },
     see (item) {
+        // debugger;
         console.log('see:'+item.title)
         this.$store.state.focusTitle = item.title
         this.$store.state.focusDate = item.date
         console.log('see:'+this.$store.state.focusTitle)
+        let {file_id, title, date } = item;
+
+        this.$store.dispatch('getNote', { file_id, title, date });
         this.$router.push({ name: 'note', params: { id: item.file_id}})
     },
     del (item) {
@@ -95,15 +123,24 @@ methods: {
         axios({
               method: 'get',
               baseURL: baseUrl,
-              url: '/note/delNote',
+              url: '/file/delnote',
               params: {
                 file_id: item.file_id
               },
               timeout: 30000
             })
-              .then(response => {
-                console.log(response.data)
-                this.noteList = response.data
+              .then(res => {
+                let { code, data } = res.data;
+                code = Number(code);
+                console.log(code)
+                if (code === 200) {
+                    this.$Message.success('删除成功');
+                    this.noteList = data;
+                } else {
+                    this.$$Message.error('删除失败');
+                }
+                // console.log(response.data)
+                // this.noteList = response.data
               })
               .catch(error => {
                 console.error(error)
@@ -113,12 +150,23 @@ methods: {
         axios({
               method: 'get',
               baseURL: baseUrl,
-              url: '/note/getList',
+              url: '/file/getlist',
               timeout: 30000
             })
-              .then(response => {
+              .then(res => {
                 // console.log(response.data)
-                this.noteList = response.data
+                let { code, data } = res.data;
+                code = Number(code);
+                if (code === 200) {
+                    this.noteList = data
+                    this.length = data.length;
+                    console.log(this.length)
+                } else {
+                    this.$Message.error('获取失败，请刷新后重试！');
+                    this.noteList = [];
+                    this.length = 0;
+                }
+                
                 
               })
               .catch(error => {

@@ -59,7 +59,10 @@
           }
         },
         methods:{
+          // to do
           check(bool,data){
+          // if (this.$store.state.checkList)
+
             //进行选择，选择或者取消
             if(bool){
               for(var i in data) {
@@ -67,7 +70,7 @@
               }
               this.$store.commit('check',{
                 type:'add',
-                nun:1
+                // nun:1
               })
               this.$store.commit('changeListData',{
                 type:'push',
@@ -77,7 +80,7 @@
               //将选择的数量进行更新
               this.$store.commit('check',{
                 type:'sub',
-                nun:-1
+                // nun:-1
               })
               this.$store.commit('changeListData',{
                 type:'pop',
@@ -86,7 +89,9 @@
             }
           },
           init(type,bool){
+            // debugger;
               this.ListData=this.$store.state.source[type.slice(1)]
+              
               // console.log('route'+type.slice(1))
              // console.log(this.$store.state.source[type.slice(1)])
               // for (var i in this.ListData) {
@@ -96,8 +101,11 @@
               if(bool){
                 this.$store.commit('check',{
                   type:'reset',
-                  nun:0
+                  // nun:0
                 })
+                this.$store.commit('changeListData', {
+                type: 'reset'
+            })
               }
 
           }
