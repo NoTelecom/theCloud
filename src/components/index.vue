@@ -89,7 +89,7 @@
                               :format="['jpg','jpeg','png', 'gif', 'mp3', 'avi',
                               'flv', 'mov', 'mac', 'dat', 'doc', 'docx', 'bmp',
                                 'pdf', 'pptx', 'ppt', 'xls', 'xlsx', 'rmvb', 'mp4',
-                                'wma', 'wav', 'md']"
+                                'wma', 'wav', 'md', 'txt']"
                               :action= "action"
                               :on-success="handleSuccess"
                               :on-error="handleError"
@@ -303,11 +303,6 @@
                   }
                 })
 
-          },
-          changeModal() {
-            console.log('aaaa')
-            this.modal = true
-            console.log(this.modal)
           },
           share () {
             let listData = this.$store.state.ListData;
@@ -697,7 +692,6 @@
                   type: name
                 }
               }).then((res) => {
-                console.log(res.data)
                 let { code, data } = res.data;
                 code = Number(code);
                 if (code === 200) {

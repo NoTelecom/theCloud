@@ -31,6 +31,11 @@
     export default {
         name: "near",
         components:{item},
+        data() {
+          return {
+            nearList: []
+          }
+        },
         created () {
           // console.log(111)
           // axios.get(baseUrl + '/file/getfile', {
@@ -49,6 +54,26 @@
           //         })
           //       }
           //     })
+          // let that = this;
+            axios.get(baseUrl + '/file/getfilebytime').then((res)=>{
+              let { code, data } = res.data;
+                code = Number(code);
+                if (code === 200) {
+                  this.nearList=data;
+                  this.$nextTick(function () {
+                    this.$store.commit('updateSource', {
+                      type: 'near',
+                      files: data
+                    })
+                  })
+                }
+                // console.log(that.$store.state.source.near)
+              // this.nearList=this.$store.state.source.near;
+              // debugger;
+              // console.log(this.nearList)
+            }).catch((err)=>{
+              console.log(err)
+            })
         },
         mounted(){
           
@@ -59,26 +84,7 @@
           //   }else{
           //     this.fromSources = this.$store.state.store
           //   }
-          let that = this;
-            axios.get(baseUrl + '/file/getfilebytime').then((res)=>{
-              console.log(res.data)
-              let { code, data } = res.data;
-                code = Number(code);
-                if (code === 200) {
-                  that.$nextTick(function () {
-                    that.$store.commit('updateSource', {
-                      type: 'near',
-                      files: data
-                    })
-                  })
-                }
-                // console.log(that.$store.state.source.near)
-              that.nearList=that.$store.state.source.near;
-              // debugger;
-              // console.log(this.nearList)
-            }).catch((err)=>{
-              console.log(err)
-            })
+          
                    
         },
         data(){

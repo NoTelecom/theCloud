@@ -97,7 +97,6 @@
             }
           },
           init(type,bool){
-            // debugger;
               this.ListData=this.$store.state.source[type.slice(1)]
               
               // console.log('route'+type.slice(1))
@@ -124,5 +123,6 @@
 <style scoped>
 .all{
   text-align: center;
+  background: transparent !important;
 }
 </style>

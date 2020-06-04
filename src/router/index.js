@@ -28,13 +28,13 @@ export default new Router({
           },
           component:(resolve) => require(['../components/near'],resolve)
         },
-        // {
-        //   path: '/classify',
-        //   meta:{
-        //     title:'分類'
-        //   },
-        //   component:(resolve) => require(['../components/classify'],resolve)
-        // },
+        {
+          path: '/classify',
+          meta:{
+            title:'分類'
+          },
+          component:(resolve) => require(['../components/classify'],resolve)
+        },
         {
           path: '/all',
           meta:{

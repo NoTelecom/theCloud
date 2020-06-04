@@ -2,7 +2,7 @@
 <template>
 <div class='main'>
       <h1>常用服务</h1>
-    <div class="wrap">
+    <Menu class="wrap" @on-select="changeOne">
       <MenuItem name="near" to="/near">
         <div class="tile">
           <img src='../../static/img/classify3.jpg' />
@@ -32,7 +32,7 @@
         </div>
         </MenuItem>
       <MenuItem name="trash" to="/trash">
-        <div class="tile" @click="enter(trash)">
+        <div class="tile">
             <img src='../../static/img/classify4.jpg' />
             <div class="text">
             <h1>回收站</h1>
@@ -46,7 +46,7 @@
         </div>
     </div>
     </MenuItem>
-</div>
+</Menu>
 </div>
 </template>
 
@@ -73,7 +73,32 @@ export default {
   filters: {},
   // 方法集合
   methods: {
-    
+    changeOne(name) {
+            //路由切换加载信息
+            if (name == 'all'||name=='doc'||name=='img'||name=='radio'||name=='video'||name=='trash') {
+              let that = this;
+              axios.get(baseUrl + '/file/getfile', {
+                params: {
+                  type: name
+                }
+              }).then((res) => {
+                console.log(res.data)
+                let { code, data } = res.data;
+                code = Number(code);
+                if (code === 200) {
+                  that.$nextTick(function () {
+                    that.$store.commit('updateSource', {
+                      type: name,
+                      files: data
+                    })
+                  })
+                }
+
+              })
+            } else if (name == 'coffer') {
+              this.goCoffer ()
+            }
+          }
   },
   // beforeRouteLeave (to, from, next) {
   //   // 离开当前路由页面时调用
@@ -118,9 +143,11 @@ export default {
 body {
   background-color: #eee
 }
-
+ .main .ivu-menu-vertical {
+  width: 0 !important;
+}
 .wrap {
-  margin: 50px auto 50px auto;
+  /* margin: 50px auto 50px auto; */
   width: 100%;
   display: flex;
   align-items: space-around;
@@ -128,8 +155,8 @@ body {
 }
 
 .tile {
-  width: 380px;
-  height: 380px;
+  width: 340px;
+  height: 340px;
   margin: 10px;
   background-color: rgb(87,163,243);
   display: inline-block;

@@ -134,8 +134,7 @@
   export default {
     created(){
       if(this.$store.isLog === true){
-        debugger;
-        this.$router.replace('/near');
+        this.$router.replace('/classify');
       } else {
         let that= this
         axios.get(baseUrl + '/users/isLog').then((res)=>{
@@ -146,7 +145,7 @@
           that.$store.dispatch("login", username)
           that.$store.commit('changeSize', size)
           // debugger;
-          that.$router.replace('/near');
+          that.$router.replace('/classify');
         }
       }).catch((err)=>{
         console.log(err)
