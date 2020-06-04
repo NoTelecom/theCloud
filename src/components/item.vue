@@ -48,13 +48,16 @@
         },
         computed:{
           img(){
-            if (this.item.type === 'img') {
+            if (this.$route.path.slice(1,this.$route.path.length) !=='trash') {
+
               // if(this.$route.path.slice(1,this.$route.path.length)=='trash'){
               //   return baseUrl + this.$store.state.user.username+'/trash/'+this.item.file
               // }else{
                 // return baseUrl + this.$store.state.user.username+'/'+this.item.type+'/'+this.item.file
                 // return this.item.path
                 // return 'data:image/jpg;base64,' + this.item.file
+              // this.visible = true;
+                
                 return baseUrl  + this.item.path
                 // return this.$store.state.user
               // }
@@ -63,6 +66,7 @@
             //   return baseUrl  + this.item.path
             // }
             else {
+              // this.visible = false;
               return '../../static/img/' + this.item.type + '.png'
             }
             
@@ -118,11 +122,14 @@
           },
           display(){
             // console.log(this.item.type)
-            if(this.item.type=='img'){
-              this.visible=true
-            } else if (this.item.type === 'radio') {
-              this.listen = true
-            } 
+            if (this.$route.path.slice(1) !=='trash') {
+              if(this.item.type=='img'){
+                this.visible=true
+              } else if (this.item.type === 'radio') {
+                this.listen = true
+              } 
+            }
+            
             // else if (this.item.type === 'doc') {
             //   if(this.$route.path.slice(1)=='trash'){
 
