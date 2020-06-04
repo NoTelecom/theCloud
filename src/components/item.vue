@@ -48,7 +48,7 @@
         },
         computed:{
           img(){
-            if (this.$route.path.slice(1,this.$route.path.length) !=='trash') {
+            if (this.$route.path.slice(1,this.$route.path.length) !=='trash' && this.item.type === 'img') {
 
               // if(this.$route.path.slice(1,this.$route.path.length)=='trash'){
               //   return baseUrl + this.$store.state.user.username+'/trash/'+this.item.file
