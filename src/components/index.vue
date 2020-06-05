@@ -9,11 +9,12 @@
                 <span style="color: black">CLOUD</span>
               </div>
 
-              <Input v-model="input"
+              <!-- <Input v-model="input"
+                    @click="searchall()"
                      icon="ios-search"
                      placeholder="搜索全部"
                      style="width: 80%;margin-bottom: 10px"
-              />
+              /> -->
             </header>
 
             <Content>
@@ -101,10 +102,10 @@
                       </Upload>
                     </DropdownItem>
                     <DropdownItem>
-                      <Upload
+                      <!-- <Upload
                         action="//jsonplaceholder.typicode.com/posts/">
                         <Icon type="ios-folder" />文件夹
-                      </Upload>
+                      </Upload> -->
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
@@ -115,7 +116,7 @@
                   </Button>
                   <Dropdown-menu slot="list">
                     <Dropdown-item><router-link   @click.native = "childemit()" to="/note/-1"><Icon type="edit"/>新建笔记</router-link></Dropdown-item>
-                    <Dropdown-item><Icon type="folder"/>新建文件夹</Dropdown-item>
+                    <!-- <Dropdown-item><Icon type="folder"/>新建文件夹</Dropdown-item> -->
                   </Dropdown-menu>
                 </Dropdown>
                 <i-button @click="dialogFormVisible = true">接受分享</i-button>
@@ -267,6 +268,10 @@
           }
         },
         methods:{
+          searchall() {
+              this.$Message.warn('还在开发中，请耐心等待～');
+
+          },
           ShareShowFile () {
               this.dialogFormVisible = false;
               let shareno = this.inputOrder;
