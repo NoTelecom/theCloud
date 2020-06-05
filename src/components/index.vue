@@ -139,7 +139,7 @@
                       v-else>复原
               </Button>
               <!-- to do -->
-              <Poptip
+              <Poptip  class="share"
                 confirm
                 placement="bottom"
                 title="您确认分享这些内容吗？"
@@ -716,6 +716,13 @@
     }
 </script>
 
+<style>
+  .share .ivu-poptip-popper .ivu-poptip-content .ivu-poptip-inner .ivu-poptip-body .ivu-icon  {
+      color: orange !important;
+      position: absolute;
+      left:10px;
+  }
+</style>
 <style scoped>
   .logo{
     font-size: 30px;
@@ -728,7 +735,5 @@
   .all{
     text-align: center;
   }
-  .share .ivu-icon .ivu-icon-ios-help-circle {
-      color: transparent;
-  }
 </style>
+
