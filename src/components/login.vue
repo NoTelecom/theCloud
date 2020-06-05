@@ -284,7 +284,7 @@
               // that.$store.commit("login",{username:that.loginForm.username})
               that.$store.dispatch("login",that.loginForm.username)
               that.$Message.success('登录成功!');
-              that.$router.push('/near');
+              that.$router.push('/classify');
             }else {
               that.$Message.success('登录失败，检查用户名密码');
             }
