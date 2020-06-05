@@ -134,7 +134,7 @@
               <Button type="warning" @click="goCoffer">加入保险箱</Button>
               <Button @click="leaveCoffer" v-if="$route.path=='/coffer'">从保险箱移出</Button>
               <Button type="primary" v-if="$route.path!='/trash'" @click="download">下载</Button>
-              <Button type="primary"
+              <Button type="primary" class="share"
                       @click="huifu"
                       v-else>复原
               </Button>
@@ -205,7 +205,8 @@
             inputOrder: '',
             myValue:false,
             checkData:[],
-            action: baseUrl + '/file/upfile'
+            action: baseUrl + '/file/upfile',
+            checkToCoffer: []
           }
         },
         // computed: {
@@ -213,25 +214,25 @@
         // },
         created(){
           // console.log(this.$store.state)
-          if(this.$store.state.isLog === false) {
-            let that= this
-            axios.get(baseUrl + '/users/isLog').then((res)=>{
-              let {code, data} = res.data;
-              let { username, size } = data
-              code = Number(code);
-              if(code === 200) {
-                // that.$store.commit("login",{username:data.username})
-                // that.$store.commit('changeSize',data.size)
-                that.$store.dispatch("login", username)
-                that.$store.commit('changeSize', size)
-                // that.$router.replace('/near');
-              } else {
-                that.$router.replace('/');
-              }
-            }).catch((err)=>{
-              console.log(err)
-            })
-          }    
+          // if(!this.$store.state.isLog) {
+          //   let that= this
+          //   axios.get(baseUrl + '/users/isLog').then((res)=>{
+          //     let {code, data} = res.data;
+          //     let { username, size } = data
+          //     code = Number(code);
+          //     if(code === 200) {
+          //       // that.$store.commit("login",{username:data.username})
+          //       // that.$store.commit('changeSize',data.size)
+          //       that.$store.dispatch("login", username)
+          //       that.$store.commit('changeSize', size)
+          //       // that.$router.replace('/near');
+          //     } else {
+          //       that.$router.replace('/');
+          //     }
+          //   }).catch((err)=>{
+          //     console.log(err)
+          //   })
+          // }    
         },
 
         computed:{
@@ -330,10 +331,10 @@
           cancel () {
             this.$Message.info('已经取消');
             this.$store.commit('check', {
-              type: 'reset'
+              select: 'reset'
             })
             this.$store.commit('changeListData', {
-                type: 'reset'
+                select: 'reset'
             })
           },
           // 下载到本地
@@ -395,13 +396,14 @@
           },
           // 真正执行进入保险箱操作
           addToOffer () {
-            // console.log('addToOffer:'+this.ListData)
-            this.$store.state.ListData.forEach(function (item) {
+              // debugger;
 
+            console.log('addToOffer:'+this.checkToCoffer)
+            this.checkToCoffer.forEach(function (item) {
               axios.get(baseUrl + '/file/insertcoffer',{
                   params:{
                     filename:item.filename,
-                      type:item.type
+                    type:item.type
                   }
                 }).then((res)=>{
                   // console.log(res)
@@ -424,6 +426,8 @@
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               inputType: 'password'}).then(({ value }) => {
+              this.checkToCoffer = this.$store.state.ListData;
+              
               let that = this
                axios({
                 method: 'get',
@@ -442,7 +446,7 @@
                     message: '密码正确~'
                   })
                   // 真正执行进入保险箱操作
-
+                  // debugger;
                   // console.log(that.$route.path)
                   if (that.$route.path != '/coffer') {
                     that.addToOffer()
@@ -724,7 +728,7 @@
   .all{
     text-align: center;
   }
-  .ivu-icon-ios-help-circle {
-      opacity: 0;
+  .share .ivu-icon .ivu-icon-ios-help-circle {
+      color: transparent;
   }
 </style>

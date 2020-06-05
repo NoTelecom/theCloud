@@ -95,9 +95,10 @@ export default {
                 }
 
               })
-            } else if (name == 'coffer') {
-              this.goCoffer ()
-            }
+            } 
+            // else if (name == 'coffer') {
+            //   this.goCoffer ()
+            // }
           }
   },
   // beforeRouteLeave (to, from, next) {

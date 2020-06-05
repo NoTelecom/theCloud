@@ -9,21 +9,45 @@
   import axios from 'axios';
   axios.defaults.withCredentials=true;
 
+  // http response 拦截器
+  // 请求时将选中值弄成false并执行change（）
+axios.interceptors.response.use(
+  response => {
+    let store = window.vm.$store;
+    store.commit('check',{
+      select:'reset',
+      // nun:0
+    })
+    store.commit('changeListData', {
+    select: 'reset'
+    })
+      // this.init(this.routeit,true)
+      return response;
+  },
+);
+
 export default {
   name: 'App',
   created(){
-    let that= this
-    axios.get(baseUrl + '/users/isLog').then((res)=>{
-      if(res.data.res ==='ok'){
-        that.$store.commit("login",{username:res.data.username});
-        that.$store.commit('changeSize',res.data.size);
-      }else{
-        this.$router.replace('/')
-      }
-    }).catch((err)=>{
-      console.log(err)
-    })
-
+    if(!this.$store.state.isLog) {
+            let that= this
+            axios.get(baseUrl + '/users/isLog').then((res)=>{
+              let {code, data} = res.data;
+              let { username, size } = data
+              code = Number(code);
+              if(code === 200) {
+                // that.$store.commit("login",{username:data.username})
+                // that.$store.commit('changeSize',data.size)
+                that.$store.dispatch("login", username)
+                that.$store.commit('changeSize', size)
+                that.$router.replace('/classify');
+              } else {
+                that.$router.replace('/');
+              }
+            }).catch((err)=>{
+              console.log(err)
+            })
+          }    
   },
   mounted () {
     //  window.addEventListener("beforeunload",()=>{

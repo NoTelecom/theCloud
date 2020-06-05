@@ -36,6 +36,7 @@
         components:{item},
         updated(){
           // console.log('this.route: ' + this.routeit)
+          // if (this.$store.state.checkList !== 0)
           this.init(this.routeit,false)
         },
         data(){
@@ -52,23 +53,19 @@
           routeit(){
             return this.$route.path
           },
-          // changeNo() {
-          //   return this.$store.state.checkList
-          // }
+         
         },
         watch:{
           routeit(newQuestion,oldQuestion){
             this.init(this.routeit,true)
           },
-          // changeNo(newNo, oldNo) {
-          //   this.init(this.routeit,true)
-
-          // }
+          
 
         },
         methods:{
           // to do
           check(bool,data){
+            // debugger;
           // if (this.$store.state.checkList)
 
             //进行选择，选择或者取消
@@ -77,21 +74,21 @@
                 console.log('check: ' + i, data[i])
               }
               this.$store.commit('check',{
-                type:'add',
+                select:'add',
                 // nun:1
               })
               this.$store.commit('changeListData',{
-                type:'push',
+                select:'push',
                 data:data
               })
             }else{
               //将选择的数量进行更新
               this.$store.commit('check',{
-                type:'sub',
+                select:'sub',
                 // nun:-1
               })
               this.$store.commit('changeListData',{
-                type:'pop',
+                select:'pop',
                 data:data
               })
             }
@@ -104,14 +101,13 @@
               // for (var i in this.ListData) {
               //   console.log('init: ' + i, this.ListData[i])
               // }
-              //重置选择个数
               if(bool){
                 this.$store.commit('check',{
-                  type:'reset',
+                  select:'reset',
                   // nun:0
                 })
                 this.$store.commit('changeListData', {
-                type: 'reset'
+                select: 'reset'
             })
               }
 

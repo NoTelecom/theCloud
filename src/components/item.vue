@@ -38,16 +38,37 @@
             }
           }
         },
-        watch: {
-          item: function() {
-            // display()
-          }
-        },
+        
         created () {
           // display()
+           // http response 拦截器
+  // 请求时将选中值弄成false并执行change（）
+        // axios.interceptors.response.use(
+        //   response => {
+        //     debugger;
+        //     this.check = false;
+        //     this.change()
+        //     // let store = window.vm.$store;
+        //     // store.commit('check',{
+        //     //   select:'reset',
+        //     //   // nun:0
+        //     // })
+        //     // store.commit('changeListData', {
+        //     // select: 'reset'
+        //     // })
+        //       // this.init(this.routeit,true)
+        //       return response;
+        //   },
+        // );
         },
         computed:{
+          mycheck(){
+            return this.$store.state.checkList
+          },
           img(){
+            if (this.$route.path.slice(1,this.$route.path.length) ==='coffer' && this.item.type === 'img' ) {
+              return '../../static/img/' + this.item.type + '.png'
+            }
             if (this.$route.path.slice(1,this.$route.path.length) !=='trash' && this.item.type === 'img') {
 
               // if(this.$route.path.slice(1,this.$route.path.length)=='trash'){
@@ -62,9 +83,7 @@
                 // return this.$store.state.user
               // }
             } 
-            // else if (this.item.type === 'trash') {
-            //   return baseUrl  + this.item.path
-            // }
+            
             else {
               // this.visible = false;
               return '../../static/img/' + this.item.type + '.png'
@@ -99,6 +118,23 @@
             }
           }
         },
+        watch:{
+          mycheck(newQuestion,oldQuestion){
+            // debugger
+            if (newQuestion === 0) {
+              // debugger
+              this.check = false;
+              this.background["background-color"]="#fff"
+              this.background["color"]="black"
+            }
+          },
+          
+          // changeNo(newNo, oldNo) {
+          //   this.init(this.routeit,true)
+
+          // }
+
+        },
         methods:{
           change(){
             // debugger;
@@ -111,7 +147,8 @@
                 file_id: this.item.file_id
               })
             }else{
-              this.background["background-color"]="white"
+              console.log('yes')
+              this.background["background-color"]="#fff"
               this.background["color"]="black"
               this.$emit('message',false,{
                 filename:this.item.filename,

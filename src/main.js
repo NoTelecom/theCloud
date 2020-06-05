@@ -53,19 +53,19 @@ const store = new vuex.Store({
     checkList:0,//选中的个数
     focusTitle: '',
     focusDate: '',
-    ListData:[] //选中的信息
+    ListData:[], //选中的信息
   },
   mutations:{
     changeSize(state,it){
       state.size=it
     },
     changeListData(state,it){
-      if(it.type=='push'){
+      if(it.select=='push'){
         state.ListData.push(it.data);
          // console.log('changeListData:' + it.data.filename)
 
         // console.log('push之后ListData:' + [].slice.call(state.ListData))
-      }else if(it.type=='pop'){
+      }else if(it.select=='pop'){
         let theindex = '';
         state.ListData.forEach(function (item,index) {
           if(item.filename==it.data.filename){
@@ -73,7 +73,7 @@ const store = new vuex.Store({
           }
         })
         state.ListData.splice(theindex,1);
-      }else if(it.type=='reset'){
+      }else if(it.select=='reset'){
         state.ListData=[]
       }
       console.log(state.ListData)
@@ -81,11 +81,12 @@ const store = new vuex.Store({
 
     },
     check(state,it){
-      if(it.type=='reset'){
+      // debugger
+      if(it.select=='reset'){
         state.checkList=0;
-      }else if(it.type=='add'){
+      }else if(it.select=='add'){
         state.checkList++;
-      }else if(it.type=='sub'){
+      }else if(it.select=='sub'){
         state.checkList--;
       }
     },
@@ -145,7 +146,7 @@ const store = new vuex.Store({
 })
 
 /* eslint-disable no-new */
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router,
   store,
